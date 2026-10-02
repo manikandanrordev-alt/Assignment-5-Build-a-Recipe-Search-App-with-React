@@ -1,9 +1,10 @@
-import React from 'react'
-
 function Recipes() {
   return (
-    <div>Recipes</div>
-  )
+    <div>
+      <h1>Recipes</h1>
+      <p>Search for your favourite recipes.</p>
+    </div>
+  );
 }
 
-export default Recipes
+export default Recipes;

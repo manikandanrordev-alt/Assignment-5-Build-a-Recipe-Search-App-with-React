@@ -1,9 +1,10 @@
-import React from 'react'
-
 function Home() {
   return (
-    <div>Home</div>
-  )
+    <div>
+      <h1>Recipe Search App</h1>
+      <p>Search and discover delicious recipes.</p>
+    </div>
+  );
 }
 
-export default Home
+export default Home;
