@@ -1,9 +1,10 @@
-import React from 'react'
-
 function Loader() {
   return (
-    <div>Loader</div>
-  )
+    <div className="loader-wrapper">
+      <div className="loader"></div>
+      <p>Finding delicious recipes...</p>
+    </div>
+  );
 }
 
-export default Loader
+export default Loader;
