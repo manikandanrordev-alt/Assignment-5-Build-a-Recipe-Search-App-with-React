@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import Loader from "../components/Loader";
 
-function RecipeDetail() {
+function RecipeDetail({ favourites, onFavourite }) {
   const { id } = useParams();
 
   const [recipe, setRecipe] = useState(null);
@@ -15,6 +15,7 @@ function RecipeDetail() {
       try {
         setLoading(true);
         setError(null);
+        setRecipe(null);
 
         const response = await axios.get(
           `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`
@@ -29,7 +30,9 @@ function RecipeDetail() {
 
         setRecipe(meal);
       } catch (err) {
-        setError("Unable to load the recipe. Please try again.");
+        setError(
+          "Unable to load the recipe. Please try again."
+        );
       } finally {
         setLoading(false);
       }
@@ -61,6 +64,10 @@ function RecipeDetail() {
     );
   }
 
+  const isFavourite = favourites.some(
+    (item) => item.idMeal === recipe.idMeal
+  );
+
   return (
     <main className="recipe-detail-page">
       <div className="detail-container">
@@ -89,14 +96,16 @@ function RecipeDetail() {
             <h1>{recipe.strMeal}</h1>
 
             <p className="detail-description">
-              Discover the ingredients and step-by-step instructions
-              for preparing this delicious dish.
+              Discover the ingredients and step-by-step
+              instructions for preparing this delicious dish.
             </p>
 
             <div className="detail-meta">
               <div>
                 <span>Category</span>
-                <strong>{recipe.strCategory || "N/A"}</strong>
+                <strong>
+                  {recipe.strCategory || "N/A"}
+                </strong>
               </div>
 
               <div>
@@ -104,6 +113,18 @@ function RecipeDetail() {
                 <strong>{recipe.strArea || "N/A"}</strong>
               </div>
             </div>
+
+            <button
+              type="button"
+              className={`detail-favourite-button ${
+                isFavourite ? "saved" : ""
+              }`}
+              onClick={() => onFavourite(recipe)}
+            >
+              {isFavourite
+                ? "♥ Saved to Favourites"
+                : "♡ Save to Favourites"}
+            </button>
 
             {recipe.strYoutube && (
               <a
@@ -126,11 +147,17 @@ function RecipeDetail() {
 
           <div className="instructions">
             {recipe.strInstructions
-              .split("\r\n")
+              .split(/\r?\n/)
               .filter(Boolean)
               .map((step, index) => (
-                <div className="instruction-step" key={index}>
-                  <span>{String(index + 1).padStart(2, "0")}</span>
+                <div
+                  className="instruction-step"
+                  key={index}
+                >
+                  <span>
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+
                   <p>{step}</p>
                 </div>
               ))}

@@ -7,29 +7,36 @@ function useRecipes(query) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!query) {
+    const trimmedQuery = query.trim();
+
+    if (!trimmedQuery) {
       setData([]);
+      setLoading(false);
+      setError(null);
       return;
     }
 
-    async function fetchRecipes() {
+    const timeoutId = setTimeout(async () => {
       try {
         setLoading(true);
         setError(null);
 
         const response = await axios.get(
-          `https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`
+          `https://www.themealdb.com/api/json/v1/1/search.php?s=${encodeURIComponent(
+            trimmedQuery
+          )}`
         );
 
         setData(response.data.meals || []);
       } catch (err) {
-        setError("Failed to fetch recipes.");
+        setError("Unable to fetch recipes. Please try again.");
+        setData([]);
       } finally {
         setLoading(false);
       }
-    }
+    }, 500);
 
-    fetchRecipes();
+    return () => clearTimeout(timeoutId);
   }, [query]);
 
   return {
